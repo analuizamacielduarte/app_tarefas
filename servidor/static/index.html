@@ -1,0 +1,2004 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestão de Tarefas & Fotos | Servidor Central</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --primary-light: #eef2ff;
+      --primary-border: #c7d2fe;
+      --success: #10b981;
+      --success-light: #ecfdf5;
+      --danger: #ef4444;
+      --danger-light: #fef2f2;
+      --warning: #f59e0b;
+      --slate-50: #f8fafc;
+      --slate-100: #f1f5f9;
+      --slate-200: #e2e8f0;
+      --slate-300: #cbd5e1;
+      --slate-400: #94a3b8;
+      --slate-500: #64748b;
+      --slate-600: #475569;
+      --slate-700: #334155;
+      --slate-800: #1e293b;
+      --slate-900: #0f172a;
+      --radius: 10px;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+      --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.15), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      background-color: var(--slate-50);
+      color: var(--slate-800);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* TOP NAVBAR */
+    header {
+      background: #ffffff;
+      border-bottom: 1px solid var(--slate-200);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
+
+    .nav-container {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 0.75rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      cursor: pointer;
+    }
+
+    .brand-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--primary), #818cf8);
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.25rem;
+      box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
+    }
+
+    .brand-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--slate-900);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .brand-subtitle {
+      font-size: 0.75rem;
+      color: var(--slate-500);
+      font-weight: 500;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.2rem 0.6rem;
+      background-color: var(--success-light);
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      background-color: var(--success);
+      border-radius: 50%;
+      box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.3);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .ip-box {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background-color: var(--slate-100);
+      border: 1px solid var(--slate-200);
+      padding: 0.4rem 0.8rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+    }
+
+    .ip-label {
+      color: var(--slate-500);
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .ip-address {
+      font-family: monospace;
+      font-weight: 600;
+      color: var(--primary);
+      user-select: all;
+    }
+
+    /* BUTTONS */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease-in-out;
+      border: 1px solid transparent;
+      white-space: nowrap;
+      text-decoration: none;
+    }
+
+    .btn-sm {
+      padding: 0.35rem 0.7rem;
+      font-size: 0.8rem;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+    }
+    .btn-primary:hover {
+      background-color: var(--primary-hover);
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+    }
+
+    .btn-secondary {
+      background-color: white;
+      border-color: var(--slate-200);
+      color: var(--slate-700);
+    }
+    .btn-secondary:hover {
+      background-color: var(--slate-100);
+      border-color: var(--slate-300);
+    }
+
+    .btn-outline-primary {
+      background-color: var(--primary-light);
+      color: var(--primary);
+      border-color: var(--primary-border);
+    }
+    .btn-outline-primary:hover {
+      background-color: #e0e7ff;
+    }
+
+    .btn-danger {
+      background-color: var(--danger-light);
+      color: var(--danger);
+      border-color: #fecaca;
+    }
+    .btn-danger:hover {
+      background-color: #fee2e2;
+    }
+
+    /* MAIN APP LAYOUT */
+    .app-body {
+      flex: 1;
+      max-width: 1440px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 1.5rem;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 900px) {
+      .app-body {
+        grid-template-columns: 1fr;
+      }
+      .sidebar {
+        display: none;
+      }
+      .sidebar.mobile-open {
+        display: block;
+      }
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      background: white;
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      height: fit-content;
+      position: sticky;
+      top: 5rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .sidebar-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--slate-900);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .search-box {
+      position: relative;
+      margin-bottom: 1rem;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 0.5rem 0.75rem 0.5rem 2rem;
+      border: 1px solid var(--slate-200);
+      border-radius: 8px;
+      font-size: 0.85rem;
+      outline: none;
+      transition: border 0.15s;
+    }
+    .search-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 0.65rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--slate-400);
+      font-size: 0.85rem;
+    }
+
+    .project-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      max-height: calc(100vh - 300px);
+      overflow-y: auto;
+    }
+
+    .project-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.65rem 0.85rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--slate-700);
+      transition: all 0.15s;
+      border: 1px solid transparent;
+    }
+
+    .project-item:hover {
+      background-color: var(--slate-100);
+      color: var(--slate-900);
+    }
+
+    .project-item.active {
+      background-color: var(--primary-light);
+      color: var(--primary);
+      font-weight: 600;
+      border-color: var(--primary-border);
+    }
+
+    .project-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .counter-pill {
+      background-color: var(--slate-100);
+      padding: 0.15rem 0.5rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--slate-600);
+    }
+
+    .project-item.active .counter-pill {
+      background-color: white;
+      color: var(--primary);
+    }
+
+    /* STATS HEADER */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .stat-card {
+      background: white;
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .stat-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+    }
+
+    .stat-icon.blue { background: #e0e7ff; color: #4338ca; }
+    .stat-icon.green { background: #d1fae5; color: #047857; }
+    .stat-icon.purple { background: #ede9fe; color: #6d28d9; }
+    .stat-icon.amber { background: #fef3c7; color: #b45309; }
+
+    .stat-value {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--slate-900);
+      line-height: 1.2;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--slate-500);
+      font-weight: 500;
+    }
+
+    /* BREADCRUMB */
+    .breadcrumb-bar {
+      background: white;
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius);
+      padding: 0.75rem 1.25rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      color: var(--slate-600);
+      font-weight: 500;
+    }
+
+    .breadcrumb a {
+      color: var(--slate-600);
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .breadcrumb a:hover {
+      color: var(--primary);
+    }
+
+    .breadcrumb .sep {
+      color: var(--slate-400);
+    }
+
+    .breadcrumb .current {
+      color: var(--slate-900);
+      font-weight: 700;
+    }
+
+    /* VIEW CONTENT */
+    .main-content {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* CARD CONTAINERS */
+    .content-card {
+      background: white;
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 1.5rem;
+    }
+
+    .content-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .content-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--slate-900);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .content-subtitle {
+      font-size: 0.85rem;
+      color: var(--slate-500);
+      margin-top: 0.15rem;
+    }
+
+    /* TASKS GRID */
+    .tasks-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .task-card {
+      background: white;
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-sm);
+      cursor: pointer;
+    }
+
+    .task-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--primary-border);
+    }
+
+    .task-previews {
+      height: 160px;
+      background-color: var(--slate-100);
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap: 2px;
+      position: relative;
+    }
+
+    .task-previews.single {
+      grid-template-columns: 1fr;
+      grid-template-rows: 1fr;
+    }
+
+    .preview-thumb {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      background-color: var(--slate-200);
+    }
+
+    .preview-empty {
+      grid-column: 1 / -1;
+      grid-row: 1 / -1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--slate-400);
+      font-size: 0.85rem;
+      gap: 0.4rem;
+    }
+
+    .task-badge-photos {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      background: rgba(15, 23, 42, 0.85);
+      color: white;
+      backdrop-filter: blur(4px);
+      padding: 0.25rem 0.6rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .task-body {
+      padding: 1.15rem;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .task-name {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--slate-900);
+      margin-bottom: 0.4rem;
+      line-height: 1.3;
+    }
+
+    .task-info {
+      font-size: 0.8rem;
+      color: var(--slate-500);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .task-actions {
+      margin-top: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--slate-100);
+    }
+
+    /* PHOTOS GALLERY */
+    .photos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .photo-card {
+      background: white;
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .photo-card:hover {
+      box-shadow: var(--shadow-md);
+      border-color: var(--slate-300);
+    }
+
+    .photo-thumb-container {
+      position: relative;
+      height: 180px;
+      background-color: var(--slate-100);
+      cursor: pointer;
+      overflow: hidden;
+    }
+
+    .photo-thumb {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .photo-card:hover .photo-thumb {
+      transform: scale(1.05);
+    }
+
+    .photo-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      gap: 0.75rem;
+    }
+
+    .photo-card:hover .photo-overlay {
+      opacity: 1;
+    }
+
+    .overlay-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.95);
+      border: none;
+      color: var(--slate-800);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: transform 0.15s;
+    }
+
+    .overlay-btn:hover {
+      transform: scale(1.15);
+      background: white;
+      color: var(--primary);
+    }
+
+    .photo-info {
+      padding: 0.75rem;
+      background: white;
+      border-top: 1px solid var(--slate-100);
+    }
+
+    .photo-name {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--slate-800);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      margin-bottom: 0.2rem;
+    }
+
+    .photo-details {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--slate-400);
+    }
+
+    /* DROPZONE / MANUAL UPLOAD */
+    .dropzone {
+      border: 2px dashed var(--slate-300);
+      border-radius: var(--radius);
+      padding: 2rem 1.5rem;
+      text-align: center;
+      background-color: var(--slate-50);
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 1.5rem;
+    }
+
+    .dropzone:hover, .dropzone.dragover {
+      border-color: var(--primary);
+      background-color: var(--primary-light);
+    }
+
+    .dropzone-icon {
+      font-size: 2rem;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .dropzone-text {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--slate-700);
+      margin-bottom: 0.25rem;
+    }
+
+    .dropzone-hint {
+      font-size: 0.8rem;
+      color: var(--slate-400);
+    }
+
+    /* EMPTY STATE */
+    .empty-state {
+      padding: 3.5rem 1.5rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+    }
+
+    .empty-icon {
+      width: 64px;
+      height: 64px;
+      background-color: var(--slate-100);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      color: var(--slate-400);
+      margin-bottom: 0.5rem;
+    }
+
+    .empty-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--slate-800);
+    }
+
+    .empty-desc {
+      font-size: 0.9rem;
+      color: var(--slate-500);
+      max-width: 480px;
+      line-height: 1.5;
+    }
+
+    /* HOW TO CONNECT GUIDE (BANNER) */
+    .guide-banner {
+      background: linear-gradient(135deg, #312e81 0%, #1e1b4b 100%);
+      color: white;
+      border-radius: var(--radius);
+      padding: 1.75rem;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--shadow-md);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .guide-banner::after {
+      content: '📱';
+      position: absolute;
+      right: 1.5rem;
+      bottom: -1rem;
+      font-size: 8rem;
+      opacity: 0.12;
+      pointer-events: none;
+    }
+
+    .guide-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .guide-desc {
+      font-size: 0.9rem;
+      color: #c7d2fe;
+      margin-bottom: 1.25rem;
+      max-width: 650px;
+      line-height: 1.5;
+    }
+
+    .guide-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+    }
+
+    .guide-step {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 8px;
+      padding: 1rem;
+      backdrop-filter: blur(4px);
+    }
+
+    .step-num {
+      width: 24px;
+      height: 24px;
+      background: #818cf8;
+      color: #1e1b4b;
+      font-size: 0.8rem;
+      font-weight: 700;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 0.6rem;
+    }
+
+    .step-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+
+    .step-desc {
+      font-size: 0.8rem;
+      color: #e0e7ff;
+      line-height: 1.4;
+    }
+
+    /* MODAL */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 1rem;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal {
+      background: white;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 500px;
+      box-shadow: var(--shadow-xl);
+      overflow: hidden;
+      animation: modalIn 0.2s ease-out;
+    }
+
+    @keyframes modalIn {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--slate-200);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--slate-900);
+    }
+
+    .modal-close {
+      background: transparent;
+      border: none;
+      font-size: 1.25rem;
+      color: var(--slate-400);
+      cursor: pointer;
+    }
+    .modal-close:hover {
+      color: var(--slate-700);
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+    }
+
+    .modal-footer {
+      padding: 1rem 1.5rem;
+      background-color: var(--slate-50);
+      border-top: 1px solid var(--slate-200);
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--slate-700);
+      margin-bottom: 0.4rem;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 0.65rem 0.85rem;
+      border: 1px solid var(--slate-200);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      outline: none;
+    }
+
+    .form-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+    }
+
+    /* LIGHTBOX MODAL */
+    .lightbox-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.95);
+      backdrop-filter: blur(8px);
+      z-index: 200;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.5rem;
+    }
+
+    .lightbox-overlay.active {
+      display: flex;
+    }
+
+    .lightbox-topbar {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: white;
+    }
+
+    .lightbox-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .lightbox-counter {
+      font-size: 0.9rem;
+      color: var(--slate-400);
+    }
+
+    .lightbox-content {
+      position: relative;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      max-width: 90vw;
+      max-height: 80vh;
+      margin: 1rem 0;
+    }
+
+    .lightbox-img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      border-radius: 6px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+    }
+
+    .lightbox-nav-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255, 255, 255, 0.15);
+      border: none;
+      color: white;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      font-size: 1.5rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s, transform 0.15s;
+    }
+    .lightbox-nav-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-50%) scale(1.1);
+    }
+
+    .lightbox-prev { left: -60px; }
+    .lightbox-next { right: -60px; }
+
+    @media (max-width: 768px) {
+      .lightbox-prev { left: 10px; }
+      .lightbox-next { right: 10px; }
+    }
+
+    .lightbox-bottombar {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    /* TOAST */
+    .toast-container {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      z-index: 300;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .toast {
+      background: var(--slate-900);
+      color: white;
+      padding: 0.75rem 1.25rem;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      animation: toastIn 0.25s ease-out;
+    }
+
+    @keyframes toastIn {
+      from { transform: translateY(100%); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .toast-success { border-left: 4px solid var(--success); }
+    .toast-danger { border-left: 4px solid var(--danger); }
+    .toast-info { border-left: 4px solid var(--primary); }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="nav-container">
+      <div class="brand" onclick="navigateToHome()">
+        <div class="brand-icon">📁</div>
+        <div>
+          <div class="brand-title">
+            Servidor de Tarefas & Fotos
+            <span class="status-badge"><span class="status-dot"></span> Online</span>
+          </div>
+          <div class="brand-subtitle">Recepção e organização automática para mobile Flutter</div>
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <div class="ip-box" title="Cole este endereço nas configurações do aplicativo no celular">
+          <span class="ip-label">App Flutter URL:</span>
+          <span class="ip-address" id="nav-server-ip">Carregando...</span>
+          <button class="btn btn-sm btn-secondary" onclick="copyServerIp()" title="Copiar endereço do servidor">📋 Copiar</button>
+        </div>
+        <button class="btn btn-sm btn-outline-primary" onclick="openModal('help-modal')">📱 Como Conectar?</button>
+        <button class="btn btn-sm btn-secondary" onclick="refreshCurrentView()" title="Atualizar dados">🔄 Atualizar</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- BODY CONTENT -->
+  <div class="app-body">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <span class="sidebar-title">Projetos</span>
+        <button class="btn btn-sm btn-primary" onclick="openCreateProjectModal()" title="Novo Projeto">+ Criar</button>
+      </div>
+
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="project-search" class="search-input" placeholder="Buscar projeto..." oninput="filterProjects()">
+      </div>
+
+      <ul class="project-list" id="project-list-container">
+        <!-- Rendered via JS -->
+      </ul>
+    </aside>
+
+    <!-- MAIN VIEW -->
+    <main class="main-content">
+      <!-- STATS BAR -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon blue">📁</div>
+          <div>
+            <div class="stat-value" id="stat-projects">-</div>
+            <div class="stat-label">Projetos Ativos</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon green">📋</div>
+          <div>
+            <div class="stat-value" id="stat-tasks">-</div>
+            <div class="stat-label">Tarefas Registradas</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon purple">📸</div>
+          <div>
+            <div class="stat-value" id="stat-photos">-</div>
+            <div class="stat-label">Fotos Armazenadas</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon amber">💾</div>
+          <div>
+            <div class="stat-value" id="stat-size">-</div>
+            <div class="stat-label">Espaço em Disco</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BREADCRUMB -->
+      <div class="breadcrumb-bar">
+        <div class="breadcrumb" id="breadcrumb-container">
+          <span class="current">Painel Geral</span>
+        </div>
+        <div id="breadcrumb-actions" style="display: flex; gap: 0.5rem;">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+      <!-- DYNAMIC CONTENT VIEW -->
+      <div id="view-container">
+        <!-- Dynamically rendered (Home Overview, Project View, or Task View) -->
+      </div>
+    </main>
+  </div>
+
+  <!-- MODAL: AJUDA / CONECTAR TELEMÓVEL -->
+  <div class="modal-overlay" id="help-modal">
+    <div class="modal" style="max-width: 600px;">
+      <div class="modal-header">
+        <div class="modal-title">📱 Como Conectar o Telemóvel</div>
+        <button class="modal-close" onclick="closeModal('help-modal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.9rem; color: var(--slate-600); margin-bottom: 1.25rem;">
+          Siga estes 3 passos simples para sincronizar as tarefas e fotos tiradas no telemóvel diretamente com este servidor:
+        </p>
+
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+          <div style="background: var(--slate-50); border: 1px solid var(--slate-200); border-radius: 8px; padding: 1rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+              <span style="background: var(--primary); color: white; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700;">1</span>
+              <strong style="font-size: 0.95rem; color: var(--slate-800);">Mesma Rede Wi-Fi</strong>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--slate-600); line-height: 1.4;">
+              Certifique-se de que o telemóvel e este computador estão ligados à <strong>mesma rede Wi-Fi</strong>.
+            </p>
+          </div>
+
+          <div style="background: var(--slate-50); border: 1px solid var(--slate-200); border-radius: 8px; padding: 1rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+              <span style="background: var(--primary); color: white; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700;">2</span>
+              <strong style="font-size: 0.95rem; color: var(--slate-800);">Configurar URL no App Flutter</strong>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--slate-600); margin-bottom: 0.75rem;">
+              No aplicativo móvel, toque no ícone de <strong>Engrenagem ⚙️</strong> no topo e insira o endereço:
+            </p>
+            <div style="display: flex; gap: 0.5rem;">
+              <input type="text" id="modal-server-url" class="form-input" style="font-family: monospace; font-weight: 600;" readonly value="http://localhost:8000">
+              <button class="btn btn-primary" onclick="copyText(document.getElementById('modal-server-url').value)">Copiar</button>
+            </div>
+          </div>
+
+          <div style="background: var(--slate-50); border: 1px solid var(--slate-200); border-radius: 8px; padding: 1rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+              <span style="background: var(--primary); color: white; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700;">3</span>
+              <strong style="font-size: 0.95rem; color: var(--slate-800);">Tirar Fotos e Clicar em "Enviar"</strong>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--slate-600); line-height: 1.4;">
+              Crie a <em>"Tarefa 1 – Instalação"</em>, anexe 1 ou 20 fotos e clique no botão azul <strong>"Enviar"</strong>. O servidor organizará as fotos automaticamente na pasta do projeto e da tarefa!
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('help-modal')">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: NOVO PROJETO -->
+  <div class="modal-overlay" id="create-project-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">📁 Criar Novo Projeto</div>
+        <button class="modal-close" onclick="closeModal('create-project-modal')">&times;</button>
+      </div>
+      <form onsubmit="handleCreateProject(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="new-project-name">Nome do Projeto:</label>
+            <input type="text" id="new-project-name" class="form-input" placeholder="Ex: Projeto 001 ou Reforma Bloco A" required autofocus>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('create-project-modal')">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Criar Projeto</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: NOVA TAREFA -->
+  <div class="modal-overlay" id="create-task-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">📋 Criar Nova Tarefa</div>
+        <button class="modal-close" onclick="closeModal('create-task-modal')">&times;</button>
+      </div>
+      <form onsubmit="handleCreateTask(event)">
+        <div class="modal-body">
+          <input type="hidden" id="task-parent-project">
+          <div class="form-group">
+            <label class="form-label">Projeto:</label>
+            <input type="text" id="task-project-display" class="form-input" disabled>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="new-task-name">Nome da Tarefa:</label>
+            <input type="text" id="new-task-name" class="form-input" placeholder="Ex: Tarefa 1 – Instalação do Equipamento" required autofocus>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('create-task-modal')">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Criar Tarefa</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- LIGHTBOX (VISUALIZADOR DE FOTOS EM TELA CHEIA) -->
+  <div class="lightbox-overlay" id="lightbox-modal">
+    <div class="lightbox-topbar">
+      <div>
+        <div class="lightbox-title" id="lightbox-filename">foto_001.jpg</div>
+        <div class="lightbox-counter" id="lightbox-counter">1 de 5</div>
+      </div>
+      <button class="btn btn-sm btn-secondary" onclick="closeLightbox()" style="background: rgba(255,255,255,0.2); color: white; border: none;">✕ Fechar (Esc)</button>
+    </div>
+
+    <div class="lightbox-content">
+      <button class="lightbox-nav-btn lightbox-prev" onclick="navigateLightbox(-1)" title="Anterior (Seta Esquerda)">❮</button>
+      <img src="" alt="Foto" id="lightbox-image" class="lightbox-img">
+      <button class="lightbox-nav-btn lightbox-next" onclick="navigateLightbox(1)" title="Seguinte (Seta Direita)">❯</button>
+    </div>
+
+    <div class="lightbox-bottombar">
+      <a href="#" id="lightbox-download-btn" class="btn btn-primary" download>📥 Baixar Imagem Original</a>
+      <button class="btn btn-danger" onclick="deleteCurrentLightboxPhoto()">🗑️ Excluir Foto</button>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATIONS CONTAINER -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <script>
+    // ESTADO DA APLICAÇÃO
+    const state = {
+      projects: [],
+      currentProject: null,
+      currentTask: null,
+      currentTaskPhotos: [],
+      lightboxIndex: 0,
+      networkInfo: null
+    };
+
+    // INICIALIZAÇÃO
+    document.addEventListener('DOMContentLoaded', async () => {
+      await loadNetworkInfo();
+      await loadStats();
+      await loadProjects();
+      navigateToHome();
+
+      // Keyboard support for Lightbox
+      document.addEventListener('keydown', (e) => {
+        const lb = document.getElementById('lightbox-modal');
+        if (lb.classList.contains('active')) {
+          if (e.key === 'Escape') closeLightbox();
+          if (e.key === 'ArrowLeft') navigateLightbox(-1);
+          if (e.key === 'ArrowRight') navigateLightbox(1);
+        }
+      });
+    });
+
+    // NOTIFICAÇÕES TOAST
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `toast toast-${type}`;
+      
+      let icon = 'ℹ️';
+      if (type === 'success') icon = '✅';
+      if (type === 'danger') icon = '⚠️';
+      
+      toast.innerHTML = `<span>${icon}</span> <span>${message}</span>`;
+      container.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(10px)';
+        toast.style.transition = 'all 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
+    }
+
+    function copyText(txt) {
+      navigator.clipboard.writeText(txt).then(() => {
+        showToast('Copiado para a área de transferência!', 'success');
+      }).catch(() => {
+        showToast('URL: ' + txt, 'info');
+      });
+    }
+
+    function copyServerIp() {
+      if (state.networkInfo && state.networkInfo.app_url) {
+        copyText(state.networkInfo.app_url);
+      }
+    }
+
+    // REDE E ESTATÍSTICAS
+    async function loadNetworkInfo() {
+      try {
+        const res = await fetch('/api/network-info');
+        state.networkInfo = await res.json();
+        const display = state.networkInfo.app_url || `http://${window.location.hostname}:8000`;
+        document.getElementById('nav-server-ip').textContent = display;
+        document.getElementById('modal-server-url').value = display;
+      } catch (err) {
+        console.error('Erro ao obter IP:', err);
+        document.getElementById('nav-server-ip').textContent = window.location.origin;
+      }
+    }
+
+    async function loadStats() {
+      try {
+        const res = await fetch('/api/stats');
+        const data = await res.json();
+        document.getElementById('stat-projects').textContent = data.projects_count;
+        document.getElementById('stat-tasks').textContent = data.tasks_count;
+        document.getElementById('stat-photos').textContent = data.photos_count;
+        document.getElementById('stat-size').textContent = data.total_size_formatted;
+      } catch (err) {
+        console.error('Erro ao carregar estatísticas:', err);
+      }
+    }
+
+    // LISTA DE PROJETOS NA SIDEBAR
+    async function loadProjects() {
+      try {
+        const res = await fetch('/api/projects');
+        state.projects = await res.json();
+        renderProjectsSidebar();
+      } catch (err) {
+        console.error('Erro ao carregar projetos:', err);
+      }
+    }
+
+    function renderProjectsSidebar() {
+      const container = document.getElementById('project-list-container');
+      const search = (document.getElementById('project-search').value || '').toLowerCase().trim();
+      
+      const filtered = state.projects.filter(p => p.name.toLowerCase().includes(search));
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <li style="padding: 1.5rem 0.5rem; text-align: center; color: var(--slate-400); font-size: 0.85rem;">
+            ${search ? 'Nenhum projeto encontrado.' : 'Nenhum projeto cadastrado.'}
+          </li>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(p => `
+        <li class="project-item ${state.currentProject === p.name ? 'active' : ''}" onclick="selectProject('${escapeHtml(p.name)}')">
+          <div style="display: flex; align-items: center; gap: 0.5rem; overflow: hidden;">
+            <span>📁</span>
+            <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${escapeHtml(p.name)}</span>
+          </div>
+          <div class="project-meta">
+            <span class="counter-pill" title="${p.photos_count} fotos">${p.photos_count} 📸</span>
+          </div>
+        </li>
+      `).join('');
+    }
+
+    function filterProjects() {
+      renderProjectsSidebar();
+    }
+
+    // NAVEGAÇÃO
+    function navigateToHome() {
+      state.currentProject = null;
+      state.currentTask = null;
+      renderProjectsSidebar();
+      renderHomeView();
+    }
+
+    function selectProject(projectName) {
+      state.currentProject = projectName;
+      state.currentTask = null;
+      renderProjectsSidebar();
+      renderProjectView(projectName);
+    }
+
+    function selectTask(projectName, taskName) {
+      state.currentProject = projectName;
+      state.currentTask = taskName;
+      renderProjectsSidebar();
+      renderTaskView(projectName, taskName);
+    }
+
+    async function refreshCurrentView() {
+      await loadStats();
+      await loadProjects();
+      if (state.currentTask) {
+        renderTaskView(state.currentProject, state.currentTask);
+      } else if (state.currentProject) {
+        renderProjectView(state.currentProject);
+      } else {
+        renderHomeView();
+      }
+      showToast('Dados atualizados!', 'info');
+    }
+
+    // VISÃO 1: HOME OVERVIEW
+    function renderHomeView() {
+      document.getElementById('breadcrumb-container').innerHTML = `
+        <span class="current">Painel Central</span>
+      `;
+      document.getElementById('breadcrumb-actions').innerHTML = `
+        <button class="btn btn-sm btn-outline-primary" onclick="generateSampleData()">⚡ Gerar Dados de Exemplo</button>
+      `;
+
+      const view = document.getElementById('view-container');
+      
+      const serverIp = (state.networkInfo && state.networkInfo.app_url) ? state.networkInfo.app_url : window.location.origin;
+
+      view.innerHTML = `
+        <!-- GUIDE BANNER -->
+        <div class="guide-banner">
+          <div class="guide-title">
+            <span>📲</span> Aplicativo Mobile Flutter Conectado
+          </div>
+          <div class="guide-desc">
+            As fotos enviadas pelo telemóvel são organizadas automaticamente aqui por Projeto e por Tarefa (ex: <code>storage/Projeto 001/Tarefa 1/foto_001.jpg</code>).
+          </div>
+          <div class="guide-steps">
+            <div class="guide-step">
+              <div class="step-num">1</div>
+              <div class="step-title">Conecte ao Wi-Fi</div>
+              <div class="step-desc">Computador e celular na mesma rede local.</div>
+            </div>
+            <div class="guide-step">
+              <div class="step-num">2</div>
+              <div class="step-title">Configurar URL</div>
+              <div class="step-desc">No app mobile, configure o servidor para: <strong style="color: white; font-family: monospace;">${serverIp}</strong></div>
+            </div>
+            <div class="guide-step">
+              <div class="step-num">3</div>
+              <div class="step-title">Tirar e Enviar</div>
+              <div class="step-desc">Crie a tarefa, tire 1 a 20 fotos e clique em "Enviar".</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RECENT PROJECTS -->
+        <div class="content-card">
+          <div class="content-header">
+            <div>
+              <div class="content-title">📁 Projetos Cadastrados</div>
+              <div class="content-subtitle">Selecione um projeto para inspecionar tarefas e visualizar a galeria de fotos.</div>
+            </div>
+            <button class="btn btn-primary" onclick="openCreateProjectModal()">+ Novo Projeto</button>
+          </div>
+
+          ${state.projects.length === 0 ? `
+            <div class="empty-state">
+              <div class="empty-icon">📭</div>
+              <div class="empty-title">Nenhum projeto encontrado</div>
+              <div class="empty-desc">
+                Você pode criar um projeto pelo botão acima, gerar dados de demonstração para testar, ou simplesmente enviar suas fotos a partir do aplicativo móvel!
+              </div>
+              <div style="display: flex; gap: 0.75rem; margin-top: 1rem;">
+                <button class="btn btn-primary" onclick="generateSampleData()">⚡ Criar Dados de Exemplo</button>
+                <button class="btn btn-secondary" onclick="openCreateProjectModal()">+ Novo Projeto Manual</button>
+              </div>
+            </div>
+          ` : `
+            <div class="tasks-grid">
+              ${state.projects.map(p => `
+                <div class="task-card" onclick="selectProject('${escapeHtml(p.name)}')">
+                  <div class="task-body">
+                    <div style="display: flex; align-items: flex-start; justify-content: space-between;">
+                      <div class="task-name">📁 ${escapeHtml(p.name)}</div>
+                    </div>
+                    <div class="task-info">
+                      <span>📋 ${p.tasks_count} tarefas</span> • 
+                      <span>📸 ${p.photos_count} fotos</span> • 
+                      <span>💾 ${p.total_size_formatted}</span>
+                    </div>
+                    <div class="task-actions" onclick="event.stopPropagation()">
+                      <button class="btn btn-sm btn-primary" onclick="selectProject('${escapeHtml(p.name)}')">Abrir Projeto</button>
+                      <a href="/api/download/project/${encodeURIComponent(p.name)}" class="btn btn-sm btn-secondary" title="Baixar projeto completo em ZIP">📥 ZIP</a>
+                    </div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          `}
+        </div>
+      `;
+    }
+
+    // VISÃO 2: VISÃO DO PROJETO (LISTA DE TAREFAS)
+    async function renderProjectView(projectName) {
+      document.getElementById('breadcrumb-container').innerHTML = `
+        <a onclick="navigateToHome()">Início</a>
+        <span class="sep">/</span>
+        <span class="current">📁 ${escapeHtml(projectName)}</span>
+      `;
+
+      document.getElementById('breadcrumb-actions').innerHTML = `
+        <a href="/api/download/project/${encodeURIComponent(projectName)}" class="btn btn-sm btn-secondary">📥 Baixar Projeto (.ZIP)</a>
+        <button class="btn btn-sm btn-primary" onclick="openCreateTaskModal('${escapeHtml(projectName)}')">+ Nova Tarefa</button>
+        <button class="btn btn-sm btn-danger" onclick="deleteProject('${escapeHtml(projectName)}')">🗑️ Excluir Projeto</button>
+      `;
+
+      const view = document.getElementById('view-container');
+      view.innerHTML = `<div style="text-align: center; padding: 3rem; color: var(--slate-400);">Carregando tarefas do projeto...</div>`;
+
+      try {
+        const res = await fetch(`/api/projects/${encodeURIComponent(projectName)}/tasks`);
+        if (!res.ok) throw new Error('Falha ao carregar tarefas');
+        const tasks = await res.json();
+
+        if (tasks.length === 0) {
+          view.innerHTML = `
+            <div class="content-card">
+              <div class="empty-state">
+                <div class="empty-icon">📋</div>
+                <div class="empty-title">Nenhuma tarefa neste projeto</div>
+                <div class="empty-desc">
+                  Este projeto ainda não possui tarefas registradas. Você pode criar uma tarefa agora ou sincronizar pelo celular usando o nome <strong>"${escapeHtml(projectName)}"</strong>.
+                </div>
+                <button class="btn btn-primary" style="margin-top: 1rem;" onclick="openCreateTaskModal('${escapeHtml(projectName)}')">+ Adicionar Tarefa</button>
+              </div>
+            </div>
+          `;
+          return;
+        }
+
+        view.innerHTML = `
+          <div class="content-card">
+            <div class="content-header">
+              <div>
+                <div class="content-title">Tarefas do Projeto: ${escapeHtml(projectName)}</div>
+                <div class="content-subtitle">${tasks.length} tarefas encontradas. Clique na tarefa para abrir a galeria de fotos.</div>
+              </div>
+              <button class="btn btn-primary" onclick="openCreateTaskModal('${escapeHtml(projectName)}')">+ Nova Tarefa</button>
+            </div>
+
+            <div class="tasks-grid">
+              ${tasks.map(t => {
+                const previews = t.preview_photos || [];
+                const isSingle = previews.length === 1;
+                return `
+                  <div class="task-card" onclick="selectTask('${escapeHtml(projectName)}', '${escapeHtml(t.name)}')">
+                    <div class="task-previews ${isSingle ? 'single' : ''}">
+                      ${previews.length > 0 ? previews.map(src => `
+                        <img src="${src}" class="preview-thumb" loading="lazy" alt="Preview">
+                      `).join('') : `
+                        <div class="preview-empty">
+                          <span style="font-size: 1.5rem;">📷</span>
+                          <span>Nenhuma foto</span>
+                        </div>
+                      `}
+                      <span class="task-badge-photos">📸 ${t.photos_count} fotos</span>
+                    </div>
+
+                    <div class="task-body">
+                      <div class="task-name">${escapeHtml(t.name)}</div>
+                      <div class="task-info">
+                        <span>💾 ${t.total_size_formatted}</span> • 
+                        <span>🕒 ${t.updated_at}</span>
+                      </div>
+                      <div class="task-actions" onclick="event.stopPropagation()">
+                        <button class="btn btn-sm btn-primary" onclick="selectTask('${escapeHtml(projectName)}', '${escapeHtml(t.name)}')">Ver Fotos</button>
+                        <a href="/api/download/task/${encodeURIComponent(projectName)}/${encodeURIComponent(t.name)}" class="btn btn-sm btn-secondary" title="Baixar ZIP desta tarefa">📥 ZIP</a>
+                        <button class="btn btn-sm btn-danger" onclick="deleteTask('${escapeHtml(projectName)}', '${escapeHtml(t.name)}')">🗑️</button>
+                      </div>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `;
+
+      } catch (err) {
+        console.error(err);
+        view.innerHTML = `<div class="content-card"><div class="empty-state"><div class="empty-title">Erro ao carregar tarefas</div><div class="empty-desc">${err.message}</div></div></div>`;
+      }
+    }
+
+    // VISÃO 3: VISÃO DA TAREFA (GALERIA COMPLETA DE FOTOS)
+    async function renderTaskView(projectName, taskName) {
+      document.getElementById('breadcrumb-container').innerHTML = `
+        <a onclick="navigateToHome()">Início</a>
+        <span class="sep">/</span>
+        <a onclick="selectProject('${escapeHtml(projectName)}')">${escapeHtml(projectName)}</a>
+        <span class="sep">/</span>
+        <span class="current">${escapeHtml(taskName)}</span>
+      `;
+
+      document.getElementById('breadcrumb-actions').innerHTML = `
+        <button class="btn btn-sm btn-secondary" onclick="selectProject('${escapeHtml(projectName)}')">← Voltar ao Projeto</button>
+        <a href="/api/download/task/${encodeURIComponent(projectName)}/${encodeURIComponent(taskName)}" class="btn btn-sm btn-outline-primary">📥 Baixar Tarefa (.ZIP)</a>
+        <button class="btn btn-sm btn-danger" onclick="deleteTask('${escapeHtml(projectName)}', '${escapeHtml(taskName)}')">🗑️ Excluir Tarefa</button>
+      `;
+
+      const view = document.getElementById('view-container');
+      view.innerHTML = `<div style="text-align: center; padding: 3rem; color: var(--slate-400);">Carregando fotos da tarefa...</div>`;
+
+      try {
+        const res = await fetch(`/api/projects/${encodeURIComponent(projectName)}/tasks/${encodeURIComponent(taskName)}`);
+        if (!res.ok) throw new Error('Falha ao carregar fotos da tarefa');
+        const data = await res.json();
+        state.currentTaskPhotos = data.photos || [];
+
+        view.innerHTML = `
+          <div class="content-card">
+            <div class="content-header">
+              <div>
+                <div class="content-title">📸 ${escapeHtml(taskName)}</div>
+                <div class="content-subtitle">
+                  ${data.photos_count} fotos anexadas • ${data.total_size_formatted} no disco
+                </div>
+              </div>
+              <a href="/api/download/task/${encodeURIComponent(projectName)}/${encodeURIComponent(taskName)}" class="btn btn-primary">
+                📥 Baixar Todas as Fotos (.ZIP)
+              </a>
+            </div>
+
+            <!-- DROPZONE PARA ENVIO MANUAL PELO COMPUTADOR -->
+            <div class="dropzone" id="task-dropzone" onclick="document.getElementById('manual-file-input').click()">
+              <input type="file" id="manual-file-input" multiple accept="image/*" style="display: none;" onchange="handleManualUpload(event)">
+              <div class="dropzone-icon">📤</div>
+              <div class="dropzone-text">Arraste fotos para cá ou clique para selecionar do computador</div>
+              <div class="dropzone-hint">Suporta JPG, PNG, WEBP, HEIC e outros formatos de imagem</div>
+            </div>
+
+            ${state.currentTaskPhotos.length === 0 ? `
+              <div class="empty-state">
+                <div class="empty-icon">📷</div>
+                <div class="empty-title">Nenhuma foto anexada</div>
+                <div class="empty-desc">
+                  Abra o aplicativo móvel, tire fotos nesta tarefa e clique em "Enviar", ou arraste imagens diretamente na caixa acima.
+                </div>
+              </div>
+            ` : `
+              <div class="photos-grid">
+                ${state.currentTaskPhotos.map((photo, idx) => `
+                  <div class="photo-card">
+                    <div class="photo-thumb-container" onclick="openLightbox(${idx})">
+                      <img src="${photo.url}" class="photo-thumb" loading="lazy" alt="${escapeHtml(photo.name)}">
+                      <div class="photo-overlay">
+                        <button class="overlay-btn" title="Visualizar em Tela Cheia" onclick="event.stopPropagation(); openLightbox(${idx})">🔍</button>
+                        <a href="${photo.url}" download="${escapeHtml(photo.name)}" class="overlay-btn" title="Baixar Foto" onclick="event.stopPropagation()">📥</a>
+                        <button class="overlay-btn" title="Excluir Foto" onclick="event.stopPropagation(); deletePhoto('${escapeHtml(projectName)}', '${escapeHtml(taskName)}', '${escapeHtml(photo.name)}')">🗑️</button>
+                      </div>
+                    </div>
+                    <div class="photo-info">
+                      <div class="photo-name" title="${escapeHtml(photo.name)}">${escapeHtml(photo.name)}</div>
+                      <div class="photo-details">
+                        <span>${photo.size_formatted}</span>
+                        <span>${photo.created_at ? photo.created_at.split(' ')[1] : ''}</span>
+                      </div>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            `}
+          </div>
+        `;
+
+        setupDropzone();
+
+      } catch (err) {
+        console.error(err);
+        view.innerHTML = `<div class="content-card"><div class="empty-state"><div class="empty-title">Erro</div><div class="empty-desc">${err.message}</div></div></div>`;
+      }
+    }
+
+    // DROPZONE CONFIGURATION
+    function setupDropzone() {
+      const dropzone = document.getElementById('task-dropzone');
+      if (!dropzone) return;
+
+      ['dragenter', 'dragover'].forEach(name => {
+        dropzone.addEventListener(name, (e) => {
+          e.preventDefault();
+          dropzone.classList.add('dragover');
+        });
+      });
+
+      ['dragleave', 'drop'].forEach(name => {
+        dropzone.addEventListener(name, (e) => {
+          e.preventDefault();
+          dropzone.classList.remove('dragover');
+        });
+      });
+
+      dropzone.addEventListener('drop', (e) => {
+        const files = e.dataTransfer.files;
+        if (files && files.length > 0) {
+          uploadFiles(files);
+        }
+      });
+    }
+
+    function handleManualUpload(e) {
+      const files = e.target.files;
+      if (files && files.length > 0) {
+        uploadFiles(files);
+      }
+    }
+
+    async function uploadFiles(fileList) {
+      if (!state.currentProject || !state.currentTask) return;
+      showToast(`Enviando ${fileList.length} foto(s)...`, 'info');
+
+      const formData = new FormData();
+      formData.append('project', state.currentProject);
+      formData.append('task', state.currentTask);
+
+      for (let i = 0; i < fileList.length; i++) {
+        formData.append('files', fileList[i]);
+      }
+
+      try {
+        const res = await fetch('/upload', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (!res.ok) throw new Error('Falha no upload');
+        const data = await res.json();
+        showToast(`${data.count || fileList.length} foto(s) enviada(s) com sucesso!`, 'success');
+
+        await loadStats();
+        await loadProjects();
+        renderTaskView(state.currentProject, state.currentTask);
+
+      } catch (err) {
+        console.error(err);
+        showToast('Falha no envio: ' + err.message, 'danger');
+      }
+    }
+
+    // LIGHTBOX
+    function openLightbox(index) {
+      state.lightboxIndex = index;
+      updateLightboxContent();
+      document.getElementById('lightbox-modal').classList.add('active');
+    }
+
+    function closeLightbox() {
+      document.getElementById('lightbox-modal').classList.remove('active');
+    }
+
+    function navigateLightbox(step) {
+      if (state.currentTaskPhotos.length === 0) return;
+      state.lightboxIndex = (state.lightboxIndex + step + state.currentTaskPhotos.length) % state.currentTaskPhotos.length;
+      updateLightboxContent();
+    }
+
+    function updateLightboxContent() {
+      const photo = state.currentTaskPhotos[state.lightboxIndex];
+      if (!photo) return;
+
+      document.getElementById('lightbox-filename').textContent = photo.name;
+      document.getElementById('lightbox-counter').textContent = `Foto ${state.lightboxIndex + 1} de ${state.currentTaskPhotos.length} (${photo.size_formatted})`;
+      document.getElementById('lightbox-image').src = photo.url;
+      
+      const dlBtn = document.getElementById('lightbox-download-btn');
+      dlBtn.href = photo.url;
+      dlBtn.setAttribute('download', photo.name);
+    }
+
+    async function deleteCurrentLightboxPhoto() {
+      const photo = state.currentTaskPhotos[state.lightboxIndex];
+      if (!photo) return;
+      if (confirm(`Deseja realmente excluir a foto "${photo.name}"?`)) {
+        await deletePhoto(state.currentProject, state.currentTask, photo.name, true);
+      }
+    }
+
+    // EXCLUSÕES
+    async function deletePhoto(project, task, filename, fromLightbox = false) {
+      if (!fromLightbox && !confirm(`Excluir a foto "${filename}"?`)) return;
+
+      try {
+        const res = await fetch(`/api/photos/${encodeURIComponent(project)}/${encodeURIComponent(task)}/${encodeURIComponent(filename)}`, {
+          method: 'DELETE'
+        });
+        if (!res.ok) throw new Error('Erro ao excluir foto');
+
+        showToast('Foto excluída com sucesso!', 'success');
+        await loadStats();
+        await loadProjects();
+
+        if (fromLightbox) {
+          state.currentTaskPhotos.splice(state.lightboxIndex, 1);
+          if (state.currentTaskPhotos.length === 0) {
+            closeLightbox();
+          } else {
+            state.lightboxIndex = state.lightboxIndex % state.currentTaskPhotos.length;
+            updateLightboxContent();
+          }
+        }
+
+        renderTaskView(project, task);
+      } catch (err) {
+        showToast('Erro: ' + err.message, 'danger');
+      }
+    }
+
+    async function deleteTask(project, task) {
+      if (!confirm(`Deseja realmente excluir a tarefa "${task}" e TODAS as suas fotos?`)) return;
+
+      try {
+        const res = await fetch(`/api/tasks/${encodeURIComponent(project)}/${encodeURIComponent(task)}`, {
+          method: 'DELETE'
+        });
+        if (!res.ok) throw new Error('Erro ao excluir tarefa');
+
+        showToast('Tarefa excluída!', 'success');
+        await loadStats();
+        await loadProjects();
+        renderProjectView(project);
+      } catch (err) {
+        showToast('Erro: ' + err.message, 'danger');
+      }
+    }
+
+    async function deleteProject(project) {
+      if (!confirm(`ATENÇÃO: Deseja realmente excluir o projeto "${project}" e TODAS as suas tarefas e fotos?`)) return;
+
+      try {
+        const res = await fetch(`/api/projects/${encodeURIComponent(project)}`, {
+          method: 'DELETE'
+        });
+        if (!res.ok) throw new Error('Erro ao excluir projeto');
+
+        showToast('Projeto excluído!', 'success');
+        await loadStats();
+        await loadProjects();
+        navigateToHome();
+      } catch (err) {
+        showToast('Erro: ' + err.message, 'danger');
+      }
+    }
+
+    // CRIAÇÃO DE PROJETOS E TAREFAS
+    function openCreateProjectModal() {
+      document.getElementById('new-project-name').value = '';
+      openModal('create-project-modal');
+    }
+
+    async function handleCreateProject(e) {
+      e.preventDefault();
+      const name = document.getElementById('new-project-name').value.trim();
+      if (!name) return;
+
+      try {
+        const res = await fetch('/api/projects', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name })
+        });
+        if (!res.ok) throw new Error('Erro ao criar projeto');
+
+        closeModal('create-project-modal');
+        showToast('Projeto criado com sucesso!', 'success');
+        await loadStats();
+        await loadProjects();
+        selectProject(name);
+      } catch (err) {
+        showToast('Erro: ' + err.message, 'danger');
+      }
+    }
+
+    function openCreateTaskModal(projectName) {
+      document.getElementById('task-parent-project').value = projectName;
+      document.getElementById('task-project-display').value = projectName;
+      document.getElementById('new-task-name').value = '';
+      openModal('create-task-modal');
+    }
+
+    async function handleCreateTask(e) {
+      e.preventDefault();
+      const project = document.getElementById('task-parent-project').value;
+      const name = document.getElementById('new-task-name').value.trim();
+      if (!name || !project) return;
+
+      try {
+        const res = await fetch('/api/tasks', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ project, name })
+        });
+        if (!res.ok) throw new Error('Erro ao criar tarefa');
+
+        closeModal('create-task-modal');
+        showToast('Tarefa criada com sucesso!', 'success');
+        await loadStats();
+        await loadProjects();
+        renderProjectView(project);
+      } catch (err) {
+        showToast('Erro: ' + err.message, 'danger');
+      }
+    }
+
+    // GERAR DADOS DE EXEMPLO
+    async function generateSampleData() {
+      showToast('Gerando dados de teste...', 'info');
+      try {
+        const res = await fetch('/api/generate-samples', { method: 'POST' });
+        if (!res.ok) throw new Error('Erro ao gerar dados');
+        showToast('Dados de demonstração criados com sucesso!', 'success');
+        await loadStats();
+        await loadProjects();
+        selectProject('Projeto 001');
+      } catch (err) {
+        showToast('Erro: ' + err.message, 'danger');
+      }
+    }
+
+    // CONTROLE DE MODAIS
+    function openModal(id) {
+      document.getElementById(id).classList.add('active');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('active');
+    }
+
+    // ESCAPE HTML HELPER
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+  </script>
+</body>
+</html>
